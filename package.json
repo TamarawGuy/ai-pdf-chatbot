@@ -12,6 +12,7 @@
     "@ai-sdk/openai": "^3.0.63",
     "@ai-sdk/react": "^3.0.178",
     "@base-ui/react": "^1.4.1",
+    "@clerk/nextjs": "^7.3.3",
     "@radix-ui/react-use-controllable-state": "^1.2.2",
     "@rive-app/react-webgl2": "^4.28.3",
     "@streamdown/cjk": "^1.0.3",
