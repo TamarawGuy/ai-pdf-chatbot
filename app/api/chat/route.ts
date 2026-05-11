@@ -5,6 +5,7 @@ import {
   tool,
   InferUITools,
   UIDataTypes,
+  stepCountIs,
 } from "ai";
 import { openai } from "@ai-sdk/openai";
 import z from "zod";
@@ -18,7 +19,7 @@ const tools = {
     }),
     execute: async ({ query }) => {
       try {
-        const results = await searchDocuments(query, 3, 0.5);
+        const results = await searchDocuments(query, 5, 0);
         if (results.length === 0) {
           return "No relevant information found in knowledge base.";
         }
@@ -51,6 +52,7 @@ export async function POST(req: Request) {
 When users ask questions, search the knowledge base for relevant information.
 Always search before answering if the question might relate to uploaded documents.
 Base your answers on the search results when available. Give concise answers that correctly answer what the user is asking for. Do not flood them with all the information from the search results.`,
+      stopWhen: stepCountIs(2),
     });
 
     return result.toUIMessageStreamResponse();
