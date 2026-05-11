@@ -10,10 +10,15 @@ RUN npm ci
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-# NEXT_PUBLIC_* values are inlined into the client bundle at build time,
-# so they must be present here (not just at runtime).
+# NEXT_PUBLIC_* values are inlined into the client bundle at build time.
+# NEON_DB_URL is needed because the DB client is instantiated at module load,
+# which runs during Next.js's "collect page data" pass. The URL isn't baked
+# into the output bundle — only into this stage's env, which doesn't carry
+# into the runtime stage.
 ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ARG NEON_DB_URL
+ENV NEON_DB_URL=$NEON_DB_URL
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
