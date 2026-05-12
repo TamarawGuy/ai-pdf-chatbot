@@ -15,6 +15,20 @@
       "when": 1778323341121,
       "tag": "0001_mature_siren",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778532437755,
+      "tag": "0002_careful_luke_cage",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1778533177754,
+      "tag": "0003_magenta_mandroid",
+      "breakpoints": true
     }
   ]
 }
