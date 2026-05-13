@@ -3,7 +3,10 @@ import AppSidebarServer from "@/components/app-sidebar-server";
 
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider className="flex-1 min-h-0">
+    <SidebarProvider
+      className="flex-1 min-h-0"
+      style={{ "--sidebar-top": "4rem" } as React.CSSProperties}
+    >
       <AppSidebarServer />
       <SidebarInset className="flex flex-col min-h-0">
         <div className="flex items-center gap-2 border-b px-3 h-12 shrink-0">

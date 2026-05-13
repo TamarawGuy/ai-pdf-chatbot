@@ -1,12 +1,33 @@
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 const Navigation = () => {
   return (
     <nav className="border-b border-[(--foreground)]/10">
       <div className="flex container h-16 items-center justify-between px-4 mx-auto">
-        <div className="text-xl font-semibold">Chatbot</div>
+        <div className="flex items-center gap-6">
+          <Link href="/" className="text-xl font-semibold">
+            Chatbot
+          </Link>
+          <Show when="signed-in">
+            <Link
+              href="/chat"
+              className="text-sm font-medium hover:underline underline-offset-4"
+            >
+              Chat
+            </Link>
+          </Show>
+          <Show when="signed-in">
+            <Link
+              href="/upload"
+              className="text-sm font-medium hover:underline underline-offset-4"
+            >
+              Upload
+            </Link>
+          </Show>
+        </div>
 
-        <div className="flex gap-2">
+        <div className="flex items-center gap-4">
           <Show when="signed-out">
             <SignInButton mode="modal" />
             <SignUpButton mode="modal">
