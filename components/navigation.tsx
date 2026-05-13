@@ -4,7 +4,7 @@ import Link from "next/link";
 const Navigation = () => {
   return (
     <nav className="border-b border-[(--foreground)]/10">
-      <div className="flex container h-16 items-center justify-between px-4 mx-auto">
+      <div className="flex h-16 justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="text-xl font-semibold">
             Chatbot
@@ -17,17 +17,9 @@ const Navigation = () => {
               Chat
             </Link>
           </Show>
-          <Show when="signed-in">
-            <Link
-              href="/upload"
-              className="text-sm font-medium hover:underline underline-offset-4"
-            >
-              Upload
-            </Link>
-          </Show>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex gap-4">
           <Show when="signed-out">
             <SignInButton mode="modal" />
             <SignUpButton mode="modal">
