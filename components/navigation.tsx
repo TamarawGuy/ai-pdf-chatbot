@@ -16,6 +16,12 @@ const Navigation = () => {
             >
               Chat
             </Link>
+            <Link
+              href="/youtube-bot"
+              className="text-sm font-medium hover:underline underline-offset-4"
+            >
+              Youtube Bot
+            </Link>
           </Show>
         </div>
 
