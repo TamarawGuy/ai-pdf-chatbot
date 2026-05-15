@@ -29,6 +29,13 @@
       "when": 1778533177754,
       "tag": "0003_magenta_mandroid",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1778761430101,
+      "tag": "0004_fluffy_bloodscream",
+      "breakpoints": true
     }
   ]
 }
