@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1.7
 
 # ---- Stage 1: install dependencies ----
-FROM node:22-alpine AS deps
+FROM node:24-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
 # ---- Stage 2: build ----
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 
 # NEXT_PUBLIC_* values are inlined into the client bundle at build time.
