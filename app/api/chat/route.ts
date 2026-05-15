@@ -72,8 +72,11 @@ Base your answers on the search results when available. Give concise answers tha
       stopWhen: stepCountIs(2),
     });
 
+    result.consumeStream();
+
     return result.toUIMessageStreamResponse<ChatMessage>({
       originalMessages: incoming,
+      generateMessageId: () => crypto.randomUUID(),
       headers: { "x-chat-id": chatId },
       onFinish: async ({ responseMessage }) => {
         await appendMessages(chatId, [
