@@ -11,5 +11,11 @@ export default async function ExistingChatPage({
   const data = await getChat(chatId);
   if (!data) notFound();
 
-  return <ChatView chatId={chatId} initialMessages={data.messages} />;
+  return (
+    <ChatView
+      chatId={chatId}
+      initialMessages={data.messages}
+      chatTitle={data.chat.title}
+    />
+  );
 }
