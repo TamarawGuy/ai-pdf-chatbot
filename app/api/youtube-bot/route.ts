@@ -1,12 +1,12 @@
 import { convertToModelMessages, streamText, stepCountIs } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { auth } from "@clerk/nextjs/server";
-import { makeYoutubeTools } from "@/lib/youtube-tools";
+import { makeYoutubeTools } from "@/lib/youtube/tools";
 import type { YoutubeMessage } from "@/types/youtube-message";
 import {
   appendYoutubeMessages,
   getYoutubeChatOwnership,
-} from "@/lib/youtube-chats";
+} from "@/lib/youtube/chats";
 
 export async function POST(req: Request) {
   try {

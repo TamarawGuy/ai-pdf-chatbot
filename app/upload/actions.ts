@@ -1,10 +1,10 @@
 "use server";
 
 import pdf from "pdf-parse-new";
-import { db } from "@/lib/db-config";
-import { documents } from "@/lib/db-schema";
-import { generateEmbeddings } from "@/lib/embeddings";
-import { chunkContent } from "@/lib/chunking";
+import { db } from "@/lib/db/config";
+import { documents } from "@/lib/db/schema";
+import { generateEmbeddings } from "@/lib/ai/embeddings";
+import { chunkContent } from "@/lib/ai/chunking";
 
 export async function processPdfFile(formData: FormData) {
   try {

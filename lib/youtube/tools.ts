@@ -1,6 +1,6 @@
 import { tool } from "ai";
 import z from "zod";
-import { searchYoutubeChunks } from "@/lib/youtube-search";
+import { searchYoutubeChunks } from "@/lib/youtube/search";
 
 export function makeYoutubeTools(videoId: string) {
   return {
@@ -18,9 +18,7 @@ export function makeYoutubeTools(videoId: string) {
           if (results.length === 0) {
             return "No relevant content found in this video.";
           }
-          return results
-            .map((r, i) => `[${i + 1}] ${r.content}`)
-            .join("\n\n");
+          return results.map((r, i) => `[${i + 1}] ${r.content}`).join("\n\n");
         } catch (err) {
           console.error("Transcript search error:", err);
           return "Error searching transcript";

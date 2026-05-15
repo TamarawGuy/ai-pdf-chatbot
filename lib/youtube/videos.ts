@@ -1,14 +1,14 @@
 import "server-only";
 import { and, eq } from "drizzle-orm";
-import { db } from "@/lib/db-config";
-import { youtubeVideos, youtubeChunks } from "@/lib/db-schema";
-import { chunkContent } from "@/lib/chunking";
-import { generateEmbeddings } from "@/lib/embeddings";
+import { db } from "@/lib/db/config";
+import { youtubeVideos, youtubeChunks } from "@/lib/db/schema";
+import { chunkContent } from "@/lib/ai/chunking";
+import { generateEmbeddings } from "@/lib/ai/embeddings";
 import {
   extractVideoId,
   fetchTranscriptText,
   fetchVideoTitle,
-} from "@/lib/youtube-transcript";
+} from "@/lib/youtube/transcript";
 
 export type LoadedVideo = {
   videoId: string;

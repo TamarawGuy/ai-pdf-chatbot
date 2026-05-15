@@ -1,8 +1,8 @@
 import "server-only";
 import { auth } from "@clerk/nextjs/server";
 import { and, asc, desc, eq } from "drizzle-orm";
-import { db } from "@/lib/db-config";
-import { chats, messages } from "@/lib/db-schema";
+import { db } from "@/lib/db/config";
+import { chats, messages } from "@/lib/db/schema";
 import type { ChatMessage } from "@/types/chat-message";
 
 async function requireUserId() {
@@ -59,7 +59,11 @@ export async function getChatOwnership(chatId: string) {
     .from(chats)
     .where(eq(chats.id, chatId))
     .limit(1);
-  return { exists: !!chat, ownedByCurrentUser: chat?.userId === userId, userId };
+  return {
+    exists: !!chat,
+    ownedByCurrentUser: chat?.userId === userId,
+    userId,
+  };
 }
 
 export async function createChatRow(opts: { id?: string; userId: string }) {
@@ -75,7 +79,11 @@ export async function createChatRow(opts: { id?: string; userId: string }) {
 
 export async function appendMessages(
   chatId: string,
-  toInsert: Array<{ id: string; role: ChatMessage["role"]; parts: ChatMessage["parts"] }>,
+  toInsert: Array<{
+    id: string;
+    role: ChatMessage["role"];
+    parts: ChatMessage["parts"];
+  }>,
 ) {
   if (toInsert.length === 0) return;
   await db

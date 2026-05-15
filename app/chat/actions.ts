@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { deleteChat, renameChat } from "@/lib/chats";
+import { deleteChat, renameChat } from "@/lib/pdf-chat/chats";
 
 export async function renameChatAction(chatId: string, title: string) {
   await renameChat(chatId, title);

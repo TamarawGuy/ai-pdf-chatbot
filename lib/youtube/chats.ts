@@ -1,12 +1,8 @@
 import "server-only";
 import { auth } from "@clerk/nextjs/server";
 import { and, asc, desc, eq } from "drizzle-orm";
-import { db } from "@/lib/db-config";
-import {
-  youtubeChats,
-  youtubeMessages,
-  youtubeVideos,
-} from "@/lib/db-schema";
+import { db } from "@/lib/db/config";
+import { youtubeChats, youtubeMessages, youtubeVideos } from "@/lib/db/schema";
 import type { YoutubeMessage } from "@/types/youtube-message";
 
 async function requireUserId() {
@@ -39,9 +35,7 @@ export async function getYoutubeChat(chatId: string) {
     })
     .from(youtubeChats)
     .innerJoin(youtubeVideos, eq(youtubeChats.videoId, youtubeVideos.id))
-    .where(
-      and(eq(youtubeChats.id, chatId), eq(youtubeChats.userId, userId)),
-    )
+    .where(and(eq(youtubeChats.id, chatId), eq(youtubeChats.userId, userId)))
     .limit(1);
 
   if (!row) return null;
@@ -141,16 +135,12 @@ export async function renameYoutubeChat(chatId: string, title: string) {
   await db
     .update(youtubeChats)
     .set({ title: trimmed, updatedAt: new Date() })
-    .where(
-      and(eq(youtubeChats.id, chatId), eq(youtubeChats.userId, userId)),
-    );
+    .where(and(eq(youtubeChats.id, chatId), eq(youtubeChats.userId, userId)));
 }
 
 export async function deleteYoutubeChat(chatId: string) {
   const userId = await requireUserId();
   await db
     .delete(youtubeChats)
-    .where(
-      and(eq(youtubeChats.id, chatId), eq(youtubeChats.userId, userId)),
-    );
+    .where(and(eq(youtubeChats.id, chatId), eq(youtubeChats.userId, userId)));
 }

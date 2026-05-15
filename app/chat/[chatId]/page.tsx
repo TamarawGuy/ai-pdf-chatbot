@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import ChatView from "@/components/chat-view";
-import { getChat } from "@/lib/chats";
+import { getChat } from "@/lib/pdf-chat/chats";
 
 export default async function ExistingChatPage({
   params,

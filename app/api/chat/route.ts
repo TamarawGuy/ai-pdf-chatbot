@@ -1,7 +1,7 @@
 import { convertToModelMessages, streamText, stepCountIs } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { auth } from "@clerk/nextjs/server";
-import { chatTools } from "@/lib/chat-tools";
+import { chatTools } from "@/lib/pdf-chat/tools";
 import type { ChatMessage } from "@/types/chat-message";
 import {
   appendMessages,
@@ -9,8 +9,8 @@ import {
   createChatRow,
   getChatOwnership,
   setChatTitle,
-} from "@/lib/chats";
-import { generateTitle } from "@/lib/generate-title";
+} from "@/lib/pdf-chat/chats";
+import { generateTitle } from "@/lib/ai/generate-title";
 
 export async function POST(req: Request) {
   try {

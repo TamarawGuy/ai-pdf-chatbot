@@ -7,8 +7,8 @@ import {
   createYoutubeChatRow,
   deleteYoutubeChat,
   renameYoutubeChat,
-} from "@/lib/youtube-chats";
-import { loadOrCreateVideo } from "@/lib/youtube-videos";
+} from "@/lib/youtube/chats";
+import { loadOrCreateVideo } from "@/lib/youtube/videos";
 
 export async function loadYoutubeVideoAction(
   _prevState: { error: string | null } | null,

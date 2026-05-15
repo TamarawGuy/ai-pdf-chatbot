@@ -1,6 +1,6 @@
 import { tool } from "ai";
 import z from "zod";
-import { searchDocuments } from "@/lib/search";
+import { searchDocuments } from "@/lib/pdf-chat/search";
 
 export const chatTools = {
   searchKnowledgeBase: tool({
@@ -14,7 +14,9 @@ export const chatTools = {
         if (results.length === 0) {
           return "No relevant information found in knowledge base.";
         }
-        return results.map((res, i) => `[${i + 1}] ${res.content}`).join("\n\n");
+        return results
+          .map((res, i) => `[${i + 1}] ${res.content}`)
+          .join("\n\n");
       } catch (err) {
         console.error("Search error: ", err);
         return "Error searching knowledge base";

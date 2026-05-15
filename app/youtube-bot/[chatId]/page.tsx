@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import YoutubeBotView from "@/components/youtube-bot-view";
-import { getYoutubeChat } from "@/lib/youtube-chats";
+import { getYoutubeChat } from "@/lib/youtube/chats";
 
 export default async function ExistingYoutubeBotPage({
   params,

@@ -1,4 +1,4 @@
-import { listChats } from "@/lib/chats";
+import { listChats } from "@/lib/pdf-chat/chats";
 import AppSidebar from "@/components/app-sidebar";
 
 export default async function AppSidebarServer() {
