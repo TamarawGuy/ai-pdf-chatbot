@@ -36,6 +36,20 @@
       "when": 1778761430101,
       "tag": "0004_fluffy_bloodscream",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1778867563240,
+      "tag": "0005_fat_big_bertha",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1778927887678,
+      "tag": "0006_hot_scalphunter",
+      "breakpoints": true
     }
   ]
 }

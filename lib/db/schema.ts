@@ -7,20 +7,43 @@ import {
   uuid,
   timestamp,
   jsonb,
+  integer,
 } from "drizzle-orm/pg-core";
 import type { UIMessagePart, UIDataTypes } from "ai";
 import type { ChatTools } from "@/types/chat-message";
 import type { YoutubeTools } from "@/types/youtube-message";
 
-export const documents = pgTable(
-  "documents",
+export const pdfDocuments = pgTable(
+  "pdf_documents",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id").notNull(),
+    filename: text("filename").notNull(),
+    fullText: text("full_text").notNull(),
+    tokenCount: integer("token_count").notNull(),
+    summary: text("summary"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("pdf_documents_user_created_idx").on(table.userId, table.createdAt),
+  ],
+);
+
+export const pdfChunks = pgTable(
+  "pdf_chunks",
   {
     id: serial("id").primaryKey(),
+    documentId: uuid("document_id")
+      .notNull()
+      .references(() => pdfDocuments.id, { onDelete: "cascade" }),
     content: text("content").notNull(),
     embedding: vector("embedding", { dimensions: 1536 }),
   },
   (table) => [
-    index("embeddingIndex").using(
+    index("pdf_chunks_document_idx").on(table.documentId),
+    index("pdf_chunks_embedding_idx").using(
       "hnsw",
       table.embedding.op("vector_cosine_ops"),
     ),
@@ -32,6 +55,9 @@ export const chats = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: text("user_id").notNull(),
+    documentId: uuid("document_id")
+      .notNull()
+      .references(() => pdfDocuments.id, { onDelete: "cascade" }),
     title: text("title").notNull().default("New chat"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -146,8 +172,10 @@ export const youtubeMessages = pgTable(
   ],
 );
 
-export type InsertDocument = typeof documents.$inferInsert;
-export type SelectDocument = typeof documents.$inferSelect;
+export type InsertPdfDocument = typeof pdfDocuments.$inferInsert;
+export type SelectPdfDocument = typeof pdfDocuments.$inferSelect;
+export type InsertPdfChunk = typeof pdfChunks.$inferInsert;
+export type SelectPdfChunk = typeof pdfChunks.$inferSelect;
 export type InsertChat = typeof chats.$inferInsert;
 export type SelectChat = typeof chats.$inferSelect;
 export type InsertMessage = typeof messages.$inferInsert;
