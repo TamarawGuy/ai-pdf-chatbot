@@ -1,8 +1,4 @@
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import YoutubeSidebarServer from "@/components/youtube-sidebar-server";
 
 export default function YoutubeBotLayout({
@@ -17,9 +13,6 @@ export default function YoutubeBotLayout({
     >
       <YoutubeSidebarServer />
       <SidebarInset className="flex flex-col min-h-0">
-        <div className="flex items-center gap-2 border-b px-3 h-12 shrink-0">
-          <SidebarTrigger />
-        </div>
         {children}
       </SidebarInset>
     </SidebarProvider>
