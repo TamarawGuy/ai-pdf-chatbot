@@ -50,6 +50,13 @@
       "when": 1778927887678,
       "tag": "0006_hot_scalphunter",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1778944922825,
+      "tag": "0007_bumpy_maggott",
+      "breakpoints": true
     }
   ]
 }

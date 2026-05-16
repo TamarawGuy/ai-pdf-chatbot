@@ -95,6 +95,9 @@ export const youtubeVideos = pgTable(
     youtubeVideoId: text("youtube_video_id").notNull(),
     url: text("url").notNull(),
     title: text("title").notNull(),
+    authorName: text("author_name"),
+    thumbnailUrl: text("thumbnail_url"),
+    durationMs: integer("duration_ms"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
