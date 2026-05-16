@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { FileText } from "lucide-react";
@@ -24,14 +23,12 @@ import {
   PromptInputTextarea,
 } from "@/components/ai-elements/prompt-input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import UploadPdfDialog from "@/components/upload-pdf-dialog";
 import type { ChatMessage } from "@/types/chat-message";
 
 type ChatViewProps = {
   chatId: string;
+  pdfFilename: string;
   initialMessages?: ChatMessage[];
-  isNew?: boolean;
-  chatTitle?: string;
 };
 
 const SUGGESTIONS: { title: string; description: string }[] = [
@@ -54,8 +51,10 @@ const SUGGESTIONS: { title: string; description: string }[] = [
 ];
 
 function EmptyState({
+  pdfFilename,
   onPickSuggestion,
 }: {
+  pdfFilename: string;
   onPickSuggestion: (text: string) => void;
 }) {
   return (
@@ -67,11 +66,11 @@ function EmptyState({
         <h1 className="text-center text-2xl font-semibold tracking-tight sm:text-3xl">
           Ask anything about{" "}
           <span className="font-serif font-normal italic text-blue-600">
-            your PDF
+            {pdfFilename}
           </span>
         </h1>
         <p className="max-w-md text-center text-sm text-muted-foreground">
-          Upload a document, or start with one of these to see how it works.
+          Start with one of these, or type your own question.
         </p>
       </div>
       <div className="grid w-full max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
@@ -95,13 +94,9 @@ function EmptyState({
 
 export default function ChatView({
   chatId,
+  pdfFilename,
   initialMessages,
-  isNew = false,
-  chatTitle,
 }: ChatViewProps) {
-  const router = useRouter();
-  const didReplaceUrl = useRef(false);
-
   const transport = useMemo(
     () =>
       new DefaultChatTransport<ChatMessage>({
@@ -115,18 +110,7 @@ export default function ChatView({
     id: chatId,
     messages: initialMessages,
     transport,
-    onFinish: () => {
-      if (isNew && !didReplaceUrl.current) {
-        didReplaceUrl.current = true;
-        window.history.replaceState(null, "", `/chat/${chatId}`);
-        router.refresh();
-      }
-    },
   });
-
-  useEffect(() => {
-    didReplaceUrl.current = false;
-  }, [chatId]);
 
   const handleSubmit = (message: { text: string }) => {
     sendMessage({ text: message.text });
@@ -136,19 +120,17 @@ export default function ChatView({
     <div className="flex-1 min-h-0 flex flex-col">
       <div className="flex items-center gap-3 border-b px-3 h-12 shrink-0">
         <SidebarTrigger />
-        <span className="text-sm font-medium">
+        <span className="text-sm font-medium truncate">
           PDF Chat
-          {chatTitle ? (
-            <span className="text-muted-foreground"> · {chatTitle}</span>
-          ) : null}
+          <span className="text-muted-foreground"> · {pdfFilename}</span>
         </span>
-        <div className="ml-auto">
-          <UploadPdfDialog />
-        </div>
       </div>
 
       {messages.length === 0 ? (
-        <EmptyState onPickSuggestion={(text) => sendMessage({ text })} />
+        <EmptyState
+          pdfFilename={pdfFilename}
+          onPickSuggestion={(text) => sendMessage({ text })}
+        />
       ) : (
         <Conversation className="flex-1">
           <ConversationContent>

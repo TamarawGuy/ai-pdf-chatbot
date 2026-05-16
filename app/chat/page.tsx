@@ -1,7 +1,9 @@
-import { randomUUID } from "node:crypto";
-import ChatView from "@/components/chat-view";
+import PdfUploadForm from "@/components/pdf-upload-form";
 
 export default function NewChatPage() {
-  const chatId = randomUUID();
-  return <ChatView chatId={chatId} isNew />;
+  return (
+    <div className="flex-1 min-h-0 flex items-center justify-center px-4">
+      <PdfUploadForm />
+    </div>
+  );
 }

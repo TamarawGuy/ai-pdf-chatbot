@@ -14,8 +14,8 @@ export default async function ExistingChatPage({
   return (
     <ChatView
       chatId={chatId}
+      pdfFilename={data.document.filename}
       initialMessages={data.messages}
-      chatTitle={data.chat.title}
     />
   );
 }
