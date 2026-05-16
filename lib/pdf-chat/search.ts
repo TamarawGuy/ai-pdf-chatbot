@@ -1,26 +1,25 @@
-import { cosineDistance, desc, gt, sql } from "drizzle-orm";
+import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 import { db } from "../db/config";
-import { documents } from "../db/schema";
+import { pdfChunks } from "../db/schema";
 import { generateEmbedding } from "../ai/embeddings";
 
-export async function searchDocuments(
+export async function searchPdfChunks(
+  documentId: string,
   query: string,
   limit: number = 5,
-  threshold: number = 0.5,
+  threshold: number = 0,
 ) {
   const embedding = await generateEmbedding(query);
-  const similarity = sql<number>`1 - (${cosineDistance(documents.embedding, embedding)})`;
+  const similarity = sql<number>`1 - (${cosineDistance(pdfChunks.embedding, embedding)})`;
 
-  const similarDocuments = await db
+  return db
     .select({
-      id: documents.id,
-      content: documents.content,
+      id: pdfChunks.id,
+      content: pdfChunks.content,
       similarity,
     })
-    .from(documents)
-    .where(gt(similarity, threshold))
+    .from(pdfChunks)
+    .where(and(eq(pdfChunks.documentId, documentId), gt(similarity, threshold)))
     .orderBy(desc(similarity))
     .limit(limit);
-
-  return similarDocuments;
 }

@@ -1,5 +1,5 @@
 import type { UIMessage, UIDataTypes, InferUITools } from "ai";
-import type { chatTools } from "@/lib/pdf-chat/tools";
+import type { pdfChatTools } from "@/lib/pdf-chat/tools";
 
-export type ChatTools = InferUITools<typeof chatTools>;
+export type ChatTools = InferUITools<typeof pdfChatTools>;
 export type ChatMessage = UIMessage<never, UIDataTypes, ChatTools>;
