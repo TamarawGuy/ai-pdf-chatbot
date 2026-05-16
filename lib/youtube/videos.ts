@@ -6,8 +6,8 @@ import { chunkContent } from "@/lib/ai/chunking";
 import { generateEmbeddings } from "@/lib/ai/embeddings";
 import {
   extractVideoId,
-  fetchTranscriptText,
-  fetchVideoTitle,
+  fetchVideoMetadata,
+  fetchVideoTranscript,
 } from "@/lib/youtube/transcript";
 
 export type LoadedVideo = {
@@ -40,12 +40,12 @@ export async function loadOrCreateVideo(opts: {
     return { videoId: existing.id, title: existing.title, cached: true };
   }
 
-  const [transcript, title] = await Promise.all([
-    fetchTranscriptText(youtubeVideoId),
-    fetchVideoTitle(youtubeVideoId),
+  const [transcript, metadata] = await Promise.all([
+    fetchVideoTranscript(youtubeVideoId),
+    fetchVideoMetadata(youtubeVideoId),
   ]);
 
-  if (!transcript.trim()) {
+  if (!transcript.text.trim()) {
     throw new Error("No transcript found for this video");
   }
 
@@ -55,11 +55,14 @@ export async function loadOrCreateVideo(opts: {
       userId: opts.userId,
       youtubeVideoId,
       url: `https://www.youtube.com/watch?v=${youtubeVideoId}`,
-      title,
+      title: metadata.title,
+      authorName: metadata.authorName,
+      thumbnailUrl: metadata.thumbnailUrl,
+      durationMs: transcript.durationMs,
     })
     .returning({ id: youtubeVideos.id });
 
-  const chunks = await chunkContent(transcript);
+  const chunks = await chunkContent(transcript.text);
   const embeddings = await generateEmbeddings(chunks);
 
   await db.insert(youtubeChunks).values(
@@ -70,5 +73,5 @@ export async function loadOrCreateVideo(opts: {
     })),
   );
 
-  return { videoId: video.id, title, cached: false };
+  return { videoId: video.id, title: metadata.title, cached: false };
 }
