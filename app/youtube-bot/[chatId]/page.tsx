@@ -16,6 +16,9 @@ export default async function ExistingYoutubeBotPage({
       chatId={chatId}
       videoTitle={data.video.title}
       videoUrl={data.video.url}
+      authorName={data.video.authorName}
+      thumbnailUrl={data.video.thumbnailUrl}
+      durationMs={data.video.durationMs}
       initialMessages={data.messages}
     />
   );
