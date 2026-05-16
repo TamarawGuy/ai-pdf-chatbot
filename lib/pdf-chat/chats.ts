@@ -2,7 +2,7 @@ import "server-only";
 import { auth } from "@clerk/nextjs/server";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db/config";
-import { chats, messages } from "@/lib/db/schema";
+import { chats, messages, pdfDocuments } from "@/lib/db/schema";
 import type { ChatMessage } from "@/types/chat-message";
 
 async function requireUserId() {
@@ -20,6 +20,7 @@ export async function listChats() {
       id: chats.id,
       title: chats.title,
       updatedAt: chats.updatedAt,
+      documentId: chats.documentId,
     })
     .from(chats)
     .where(eq(chats.userId, userId))
@@ -29,13 +30,17 @@ export async function listChats() {
 export async function getChat(chatId: string) {
   const userId = await requireUserId();
 
-  const [chat] = await db
-    .select()
+  const [row] = await db
+    .select({
+      chat: chats,
+      document: pdfDocuments,
+    })
     .from(chats)
+    .innerJoin(pdfDocuments, eq(chats.documentId, pdfDocuments.id))
     .where(and(eq(chats.id, chatId), eq(chats.userId, userId)))
     .limit(1);
 
-  if (!chat) return null;
+  if (!row) return null;
 
   const rows = await db
     .select()
@@ -49,29 +54,74 @@ export async function getChat(chatId: string) {
     parts: row.parts as ChatMessage["parts"],
   }));
 
-  return { chat, messages: uiMessages };
+  return { chat: row.chat, document: row.document, messages: uiMessages };
 }
 
 export async function getChatOwnership(chatId: string) {
   const userId = await requireUserId();
   const [chat] = await db
-    .select({ id: chats.id, userId: chats.userId })
+    .select({
+      id: chats.id,
+      userId: chats.userId,
+      documentId: chats.documentId,
+    })
     .from(chats)
     .where(eq(chats.id, chatId))
     .limit(1);
   return {
     exists: !!chat,
     ownedByCurrentUser: chat?.userId === userId,
+    documentId: chat?.documentId,
     userId,
   };
 }
 
-export async function createChatRow(opts: { id?: string; userId: string }) {
+export async function getChatWithDocument(chatId: string) {
+  const userId = await requireUserId();
+  const [row] = await db
+    .select({
+      chatUserId: chats.userId,
+      documentId: pdfDocuments.id,
+      filename: pdfDocuments.filename,
+      fullText: pdfDocuments.fullText,
+      tokenCount: pdfDocuments.tokenCount,
+      summary: pdfDocuments.summary,
+    })
+    .from(chats)
+    .innerJoin(pdfDocuments, eq(chats.documentId, pdfDocuments.id))
+    .where(eq(chats.id, chatId))
+    .limit(1);
+  if (!row) {
+    return { exists: false as const, ownedByCurrentUser: false, userId };
+  }
+  return {
+    exists: true as const,
+    ownedByCurrentUser: row.chatUserId === userId,
+    userId,
+    document: {
+      id: row.documentId,
+      filename: row.filename,
+      fullText: row.fullText,
+      tokenCount: row.tokenCount,
+      summary: row.summary,
+    },
+  };
+}
+
+export async function createChatRow(opts: {
+  id?: string;
+  userId: string;
+  documentId: string;
+  title: string;
+}) {
+  const trimmed = opts.title.trim().slice(0, 60) || "New chat";
   const [row] = await db
     .insert(chats)
     .values({
       ...(opts.id ? { id: opts.id } : {}),
       userId: opts.userId,
+      documentId: opts.documentId,
+      title: trimmed,
     })
     .returning({ id: chats.id });
   return row.id;
@@ -103,14 +153,6 @@ export async function appendMessages(
     .where(eq(chats.id, chatId));
 }
 
-export async function countMessages(chatId: string) {
-  const rows = await db
-    .select({ id: messages.id })
-    .from(messages)
-    .where(eq(messages.chatId, chatId));
-  return rows.length;
-}
-
 export async function renameChat(chatId: string, title: string) {
   const userId = await requireUserId();
   const trimmed = title.trim().slice(0, 60);
@@ -120,12 +162,6 @@ export async function renameChat(chatId: string, title: string) {
     .update(chats)
     .set({ title: trimmed, updatedAt: new Date() })
     .where(and(eq(chats.id, chatId), eq(chats.userId, userId)));
-}
-
-export async function setChatTitle(chatId: string, title: string) {
-  const trimmed = title.trim().slice(0, 60);
-  if (!trimmed) return;
-  await db.update(chats).set({ title: trimmed }).where(eq(chats.id, chatId));
 }
 
 export async function deleteChat(chatId: string) {
