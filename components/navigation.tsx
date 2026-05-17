@@ -14,13 +14,13 @@ const Navigation = () => {
               href="/chat"
               className="text-sm font-medium hover:underline underline-offset-4"
             >
-              Chat
+              PDF Chat
             </Link>
             <Link
               href="/youtube-bot"
               className="text-sm font-medium hover:underline underline-offset-4"
             >
-              Youtube Bot
+              Youtube Chat
             </Link>
           </Show>
         </div>
