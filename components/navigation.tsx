@@ -9,20 +9,18 @@ const Navigation = () => {
           <Link href="/" className="text-xl font-semibold">
             Chatbot
           </Link>
-          <Show when="signed-in">
-            <Link
-              href="/chat"
-              className="text-sm font-medium hover:underline underline-offset-4"
-            >
-              PDF Chat
-            </Link>
-            <Link
-              href="/youtube-bot"
-              className="text-sm font-medium hover:underline underline-offset-4"
-            >
-              Youtube Chat
-            </Link>
-          </Show>
+          <Link
+            href="/chat"
+            className="text-sm font-medium hover:underline underline-offset-4"
+          >
+            PDF Chat
+          </Link>
+          <Link
+            href="/youtube-bot"
+            className="text-sm font-medium hover:underline underline-offset-4"
+          >
+            Youtube Chat
+          </Link>
         </div>
 
         <div className="flex gap-4 items-center">
